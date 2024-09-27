@@ -54,11 +54,12 @@ form.onsubmit = async function (e) {
     } else {
         removeCard();
         const info = conditions.find((el) => el.code === data.current.condition.code);
+        const condition = data.current.is_day ? info.languages[23]['day_text'] : info.languages[23]['night_text']
         const cardDetails = {
             name: data.location.name,
             country: data.location.country,
             temperature: data.current.temp_c,
-            condition: info.languages[23]['day_text']
+            condition: condition
         }
         showCard(cardDetails);
     }
