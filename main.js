@@ -1,3 +1,7 @@
+import conditions from "./conditions.js";
+console.log(conditions);
+
+
 const apiKey = '3329ee16dde44cc7988143613242509';
 const form = document.querySelector('.form');
 const input = document.querySelector('.input');
@@ -31,34 +35,31 @@ function showCard(cardDetails) {
 
 
 
-// Слушаем отправку формы
-
-form.onsubmit = function (e) {
-    // Отмена отправки формы
-    e.preventDefault();
-    // Берем значение из инпута, обрезаем пробелы
-    let city = input.value.trim();
-    // Делаем запрос на сервер
+async function getWeather(city) {
     const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
-    fetch(url).then((response) => {
-        return response.json()
-    }).then((data) => {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data
+}
 
-        console.log('fetch');
 
-        //Проверка на ошибку
-        if (data.error) {
-            removeCard();
-            showError(data.error.message);
-        } else {
-            const cardDetails = {
-                name: data.location.name,
-                country: data.location.country,
-                temperature: data.current.temp_c,
-                condition: data.current.condition.text
-            }
-            removeCard();
-            showCard(cardDetails);
+// Слушаем отправку формы
+form.onsubmit = async function (e) {
+    e.preventDefault();
+    let city = input.value.trim();
+    const data = await getWeather(city);
+    if (data.error) {
+        removeCard();
+        showError(data.error.message);
+    } else {
+        removeCard();
+        const info = conditions.find((el) => el.code === data.current.condition.code);
+        const cardDetails = {
+            name: data.location.name,
+            country: data.location.country,
+            temperature: data.current.temp_c,
+            condition: info.languages[23]['day_text']
         }
-    })
+        showCard(cardDetails);
+    }
 }
