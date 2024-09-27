@@ -58,8 +58,8 @@ body {
     transition: background-color 0.2s ease-in;
 }
 
-.btn:hover{
-    background: #f10d37;  
+.btn:hover {
+    background: #f10d37;
 }
 
 .card {
@@ -87,14 +87,14 @@ body {
     border-radius: 6px;
 }
 
-.card-city{
+.card-city {
     font-weight: 500;
     font-size: 28px;
     line-height: 1;
     color: #000;
 }
 
-.card-city span{
+.card-city span {
     display: inline-block;
     vertical-align: text-top;
     padding: 3px 5px;
@@ -106,13 +106,13 @@ body {
     line-height: 1;
 }
 
-.card-weather{
+.card-weather {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.card-value{
+.card-value {
     font-size: 92px;
     line-height: 1;
     color: #000;
@@ -122,7 +122,12 @@ body {
     font-size: 50%;
 }
 
-.card-description{
+.card-img {
+    width: 120px;
+    object-fit: cover;
+}
+
+.card-description {
     font-size: 20px;
     line-height: 1.2;
 }
@@ -138,7 +143,7 @@ body {
     color: #2E7695;
 }
 
-.footer a{
-    color: #2E7695;  
+.footer a {
+    color: #2E7695;
     text-decoration: none;
 }
