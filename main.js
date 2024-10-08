@@ -1,11 +1,70 @@
 import conditions from "./conditions.js";
-
+import cities from "./cities.js";
 
 
 const apiKey = '3329ee16dde44cc7988143613242509';
 const form = document.querySelector('.form');
 const input = document.querySelector('.input');
 const header = document.querySelector('.header');
+const citiesArr = getAllCities(cities);
+const selectBody = document.querySelector('.select-body');
+let timer
+
+function getAllCities(cities) {
+    let result = [];
+    cities.forEach(el => {
+        if (el.areas && el.areas.length) {
+            result.push(...getAllCities(el.areas))
+            return
+        }
+        result.push(el)
+    });
+    return result
+}
+
+function filterCities(letters) {
+    const neededCities = citiesArr.filter(({ name }) => {
+        const nameCities = name.toLowerCase();
+        return nameCities.startsWith(letters.toLowerCase());
+    }).slice(0, 10)
+    return neededCities
+}
+
+input.addEventListener('input', (event) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+        const letters = event.target.value;
+        selectBody.innerHTML = '';
+        const filteredCities = filterCities(letters);
+        if (letters.length > 0) {
+            form.classList.add('_active');
+            removeCard()
+        } else {
+            form.classList.remove('_active');
+            selectBody.style.height = '0px';
+            return
+        }
+        if (filteredCities.length === 0) {
+            form.classList.remove('_active');
+            removeCard()
+            showError('No matching cities found');
+        } else {
+            filteredCities.forEach(({ name }) => {
+                const html = `<div class="select-body-item">${name}</div>`
+                selectBody.insertAdjacentHTML('beforeend', html)
+            })
+        }
+        const selectHeight = selectBody.scrollHeight;
+        selectBody.style.height = selectHeight > 500 ? '500px' : 'auto';
+    }, 1000)
+})
+
+selectBody.addEventListener('click', (event) => {
+    const selectedCity = event.target.innerText;
+    input.value = selectedCity;
+    form.classList.remove('_active');
+    selectBody.style.height = '0px'
+});
 
 function removeCard() {
     const prevCard = document.querySelector('.card');
@@ -43,6 +102,7 @@ async function getWeather(city) {
 
 // Слушаем отправку формы
 form.onsubmit = async function (e) {
+    form.classList.remove('_active');
     e.preventDefault();
     let city = input.value.trim();
     const data = await getWeather(city);
@@ -55,7 +115,7 @@ form.onsubmit = async function (e) {
         const filePath = './img/' + (data.current.is_day ? 'day' : 'night') + '/';
         const fileName = (data.current.is_day ? info.day : info.night) + '.png';
         const imgPath = filePath + fileName;
-        
+
         const cardDetails = {
             name: data.location.name,
             country: data.location.country,
