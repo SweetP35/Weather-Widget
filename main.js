@@ -103,6 +103,7 @@ async function getWeather(city) {
 // Слушаем отправку формы
 form.onsubmit = async function (e) {
     form.classList.remove('_active');
+    selectBody.style.height = '0px'
     e.preventDefault();
     let city = input.value.trim();
     const data = await getWeather(city);
@@ -111,6 +112,7 @@ form.onsubmit = async function (e) {
         showError(data.error.message);
     } else {
         removeCard();
+
         const info = conditions.find((el) => el.code === data.current.condition.code);
         const filePath = './img/' + (data.current.is_day ? 'day' : 'night') + '/';
         const fileName = (data.current.is_day ? info.day : info.night) + '.png';
